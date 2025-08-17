@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">{{ '전체 피드' if mode=='all' else ('팔로잉 피드' if mode=='following' else '검색 결과') }}</h4>
+    {% if user %}<a href="{{ url_for('post_new') }}" class="btn btn-sm btn-primary">새 글</a>{% endif %}
+  </div>
+  {% if posts %}
+    <div class="row g-3">
+      {% for p in posts %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <a class="text-decoration-none" href="{{ url_for('post_detail', pid=p.id) }}">
+              <h5 class="card-title text-white">{{ p.title }}</h5>
+            </a>
+            <div class="small text-muted mb-2">
+              <a href="{{ url_for('profile', username=p.author.username) }}">{{ p.author.username }}</a> · {{ p.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+            <p class="card-text">{{ p.body[:120] }}{% if p.body|length > 120 %}…{% endif %}</p>
+            {% if p.image %}
+              <img src="{{ url_for('uploads', filename=p.image) }}" class="img-fluid rounded">
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center text-muted py-5">표시할 게시글이 없습니다.</div>
+  {% endif %}
+{% endblock %}

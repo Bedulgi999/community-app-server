@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">알림</h5>
+    <a class="btn btn-sm btn-outline-light" href="{{ url_for('notifications_read_all') }}">모두 읽음 처리</a>
+  </div>
+  <hr>
+  {% for n in items %}
+    <div class="d-flex justify-content-between py-2">
+      <div>
+        <span class="badge badge-soft me-2">{{ n.type }}</span>
+        {{ n.message }}
+        <span class="small text-muted ms-2">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+      </div>
+      {% if not n.is_read %}<span class="badge text-bg-primary">NEW</span>{% endif %}
+    </div>
+  {% else %}
+    <div class="text-muted">알림이 없습니다.</div>
+  {% endfor %}
+</div>
+{% endblock %}

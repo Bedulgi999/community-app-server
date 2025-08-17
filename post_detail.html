@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card p-4 mb-3">
+      <div class="d-flex justify-content-between small text-muted">
+        <div><a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a> · {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+        {% if user and (user.id == post.user_id or user.is_admin) %}
+          <div>
+            <a class="me-2" href="{{ url_for('post_edit', pid=post.id) }}">수정</a>
+            <a class="text-danger" href="{{ url_for('post_delete', pid=post.id) }}" onclick="return confirm('삭제할까요?')">삭제</a>
+          </div>
+        {% endif %}
+      </div>
+      <h3 class="mt-2 mb-3">{{ post.title }}</h3>
+      <p class="mb-3">{{ post.body }}</p>
+      {% if post.image %}<img src="{{ url_for('uploads', filename=post.image) }}" class="img-fluid rounded mb-2">{% endif %}
+      {% if user %}
+        {% if liked %}
+          <a class="btn btn-outline-light btn-sm" href="{{ url_for('post_unlike', pid=post.id) }}">좋아요 취소</a>
+        {% else %}
+          <a class="btn btn-primary btn-sm" href="{{ url_for('post_like', pid=post.id) }}">좋아요</a>
+        {% endif %}
+      {% else %}
+        <a class="btn btn-primary btn-sm" href="{{ url_for('login') }}">로그인 후 좋아요</a>
+      {% endif %}
+    </div>
+
+    <div class="card p-4">
+      <h6 class="mb-3">댓글</h6>
+      {% for c in post.comments %}
+        <div class="mb-3">
+          <div class="small text-muted"><a href="{{ url_for('profile', username=c.author.username) }}">{{ c.author.username }}</a> · {{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <div>{{ c.body }}</div>
+        </div>
+      {% else %}
+        <div class="text-muted">댓글이 없습니다.</div>
+      {% endfor %}
+
+      {% if user %}
+      <form class="mt-3" method="post" action="{{ url_for('comment_add', pid=post.id) }}">
+        {{ form.csrf_token }}
+        <div class="input-group">
+          {{ form.body(class="form-control", placeholder="댓글을 입력하세요") }}
+          <button class="btn btn-primary">등록</button>
+        </div>
+      </form>
+      {% else %}
+      <div class="mt-3"><a class="btn btn-sm btn-primary" href="{{ url_for('login') }}">로그인 후 댓글 작성</a></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

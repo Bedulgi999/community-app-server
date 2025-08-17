@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card p-4">
+      <h4 class="mb-3">{{ '새 글' if mode=='new' else '글 수정' }}</h4>
+      <form method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="mb-3">{{ form.title.label }} {{ form.title(class="form-control") }}</div>
+        <div class="mb-3">{{ form.body.label }} {{ form.body(class="form-control", rows="6") }}</div>
+        <div class="mb-3">{{ form.image.label }} {{ form.image(class="form-control") }}</div>
+        <button class="btn btn-primary">저장</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
